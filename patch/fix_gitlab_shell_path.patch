@@ -1,0 +1,7 @@
+--- embedded/service/gitlab-shell/lib/gitlab_init.rb.bak  2015-09-10 12:19:59.722078000 +0000
++++ embedded/service/gitlab-shell/lib/gitlab_init.rb  2015-09-10 12:20:26.022078000 +0000
+@@ -1,3 +1,3 @@
+-ROOT_PATH = File.expand_path(File.join(File.dirname(__FILE__), ".."))
++ROOT_PATH = "/opt/gitlab/embedded/service/gitlab-shell"
+
+ require_relative 'gitlab_config'
