@@ -1,0 +1,4 @@
+---
+blobstore:
+  local:
+    blobstore_path: /tmp/bosh-gitlab-ce

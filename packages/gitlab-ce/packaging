@@ -1,0 +1,16 @@
+# abort script on any command that exits with a non zero value
+set -xe
+set -o pipefail
+
+# extract debian archive and then
+dpkg -x gitlab-ce/gitlab-ce_8.15.2-ce.0_amd64.deb "${BOSH_INSTALL_TARGET}"
+
+patch -d "${BOSH_INSTALL_TARGET}/opt/gitlab" -p0 < gitlab-ce/fix_gitlab_shell_path.patch
+
+RUNIT_RECIPE="${BOSH_INSTALL_TARGET}/opt/gitlab/embedded/cookbooks/runit/recipes/default.rb"
+if [[ ! -e $RUNIT_RECIPE ]]; then
+  echo "WARNING: Missing file $RUNIT_RECIPE."
+  exit 1
+fi
+
+echo > $RUNIT_RECIPE

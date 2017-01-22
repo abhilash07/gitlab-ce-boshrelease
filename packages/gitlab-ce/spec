@@ -1,0 +1,6 @@
+---
+name: gitlab-ce
+
+files:
+- gitlab-ce/gitlab-ce_8.15.2-ce.0_amd64.deb
+- gitlab-ce/fix_gitlab_shell_path.patch

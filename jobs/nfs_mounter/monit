@@ -1,0 +1,8 @@
+<% if_p('gitlab-ce.nfs.address') do %>
+
+check file nfs_mounter path /var/vcap/sys/run/nfs_monitor_share/shared/.nfs_test
+  start program "/var/vcap/jobs/nfs_mounter/bin/nfs_mounter_ctl start"
+  stop program "/var/vcap/jobs/nfs_mounter/bin/nfs_mounter_ctl stop"
+  group vcap
+
+<% end %>

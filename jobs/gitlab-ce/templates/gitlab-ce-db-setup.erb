@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source /var/vcap/jobs/gitlab-ce/config/gitlab-ce-common
+
+exec 1>>$LOG_DIR/gitlab-ce-db-setup.log
+exec 2>&1
+
+if [[ ! -e $DB_INITIALIZED_FILE ]]; then
+  $OPT_DIR/bin/gitlab-rake gitlab:setup force=yes
+  mkdir -p $GITLAB_STORE
+  touch $DB_INITIALIZED_FILE
+fi

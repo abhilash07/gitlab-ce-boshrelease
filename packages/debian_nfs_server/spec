@@ -1,0 +1,5 @@
+---
+name: debian_nfs_server
+
+files:
+- debian_nfs_server/nfs-kernel-server_1.2.5-3ubuntu3_amd64.deb

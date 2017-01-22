@@ -1,0 +1,53 @@
+mount_nfs() {
+  cp -f /etc/default/nfs-common /etc/default/nfs-common.orig
+  cp -f $NFS_JOB_DIR/config/nfs-common /etc/default/nfs-common
+  cp -f $NFS_JOB_DIR/config/idmapd.conf /etc/idmapd.conf
+  service idmapd restart
+
+  # fix stale ARP cache entry issue (the old entries can take between 5 to 10mins to clean)
+  echo "Fixing ARP cache for NFS..."
+  arp -d <%= p('gitlab-ce.nfs.address') %>
+
+  echo "Unmounting old shares..."
+  umount -f $NFS_MONITOR_SHARE
+  umount -l $NFS_MOUNT_POINT
+
+  echo "Mounting NFS..."
+  mkdir -p $NFS_MOUNT_POINT
+  timeout 10s mount --verbose -o timeo=10,intr,lookupcache=positive -t nfs4 <%= p('gitlab-ce.nfs.address') %>:<%= p('gitlab-ce.nfs.share') %> $NFS_MOUNT_POINT
+  if [ $? != 0 ]; then
+    echo "Cannot mount NFS, exiting..."
+    exit 1
+  fi
+
+  echo "Mounting NFS monitor share..."
+  mkdir -p $NFS_MONITOR_SHARE
+  timeout 10s mount --verbose -o timeo=10,soft,lookupcache=positive -t nfs4 <%= p('gitlab-ce.nfs.address') %>:<%= p('gitlab-ce.nfs.share') %> $NFS_MONITOR_SHARE
+
+  touch $NFS_MONITOR_SHARE/shared/.nfs_test
+  chown vcap:vcap $NFS_MONITOR_SHARE/shared/.nfs_test
+  if [ $? != 0 ]; then
+    echo "Failed to start: cannot write to NFS"
+    exit 1
+  fi
+
+  echo "NFS mounted"
+}
+
+unmount_nfs() {
+  if mountpoint -q $RUN_DIR; then
+    echo "Unmounting NFS monitor share..."
+    umount -f $RUN_DIR
+  fi
+
+  if grep -qs $NFS_MOUNT_POINT /proc/mounts; then
+    echo "Found NFS mount, unmounting..."
+    umount -l $NFS_MOUNT_POINT
+    if [ $? -ne 0 ]; then
+      echo "Failed to unmount NFS, exiting..."
+      exit 1
+    fi
+  fi
+
+  echo "NFS unmounted"
+}

@@ -1,0 +1,34 @@
+#!/bin/bash -e
+
+set -x
+
+PROGRAM=/usr/sbin/sshd
+SSH_KEY=/var/vcap/jobs/gitlab-ce/config/ssh_host_rsa_key
+ARGS="-D -f /var/vcap/jobs/gitlab-ce/config/sshd_config"
+PIDFILE=/var/vcap/sys/run/gitlab-sshd.pid
+
+source /var/vcap/packages/common/utils.sh
+
+case $1 in
+
+  start)
+    # Fixes error when generating key_fingerprint from ssh key
+    # The gitlab assumes that git user have access to /tmp
+    chmod 777 /tmp
+
+    # Make sshd permission happy
+    chown root:root $SSH_KEY
+    chmod 0600 $SSH_KEY
+
+    start-stop-daemon --background --exec "$PROGRAM" --pidfile "$PIDFILE" --make-pidfile -S -- $ARGS
+    ;;
+
+  stop)
+    start-stop-daemon --exec "$PROGRAM" --pidfile "$PIDFILE" -K
+    ;;
+
+  *)
+    echo "Usage: sshd_ctl {start|stop}"
+    ;;
+
+esac

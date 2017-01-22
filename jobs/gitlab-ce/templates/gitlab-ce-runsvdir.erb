@@ -1,0 +1,28 @@
+#!/bin/bash -e
+
+set -x
+
+source /var/vcap/jobs/gitlab-ce/config/gitlab-ce-common
+
+PIDFILE=/var/vcap/sys/run/gitlab-runsvdir.pid
+PROGRAM="$OPT_DIR/embedded/bin/runsvdir-start"
+
+exec 1>>$LOG_DIR/gitlab-ce-runsvdir.log
+exec 2>&1
+
+case $1 in
+
+  start)
+    start-stop-daemon --background --exec "$PROGRAM" --pidfile "$PIDFILE" --make-pidfile -S
+    ;;
+
+  stop)
+    $OPT_DIR/bin/gitlab-ctl stop
+    start-stop-daemon --name "runsvdir" --pidfile "$PIDFILE" --signal HUP -K
+    ;;
+
+  *)
+    echo "Usage: gitlab-ce-runsvdir {start|stop}"
+    ;;
+
+esac

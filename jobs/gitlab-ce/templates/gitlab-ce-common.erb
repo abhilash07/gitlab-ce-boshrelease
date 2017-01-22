@@ -1,0 +1,13 @@
+OMNIBUS_PACKAGE=/var/vcap/packages/gitlab-ce/opt/gitlab
+GITLAB_JOB_DIR=/var/vcap/jobs/gitlab-ce
+OPT_DIR=/opt/gitlab
+MONITOR_FILE=$GITLAB_JOB_DIR/initialized
+GITLAB_STORE=/var/vcap/nfs/shared
+DB_INITIALIZED_FILE=$GITLAB_STORE/db_initialized
+LOG_DIR=/var/vcap/sys/log/gitlab
+
+# Pre create log directory
+mkdir -p $LOG_DIR
+
+# Fix sys and log permissions
+chmod o+x /var/vcap/sys /var/vcap/sys/log
