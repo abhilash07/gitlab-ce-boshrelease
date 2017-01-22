@@ -39,7 +39,7 @@ fi
 cd $ROOTDIR/.downloads
 NFS_TAR=nfs-kernel-server_${DEBIAN_NFS_SERVER_VERSION}.deb
 if [ ! -e ${NFS_TAR} ]; then
-    NFS_URL=http://ubuntu.mirrors.tds.net/ubuntu/pool/main/n/nfs-utils/${NFS_TAR}
+    NFS_URL=http://mirrors.lug.mtu.edu/ubuntu/pool/main/n/nfs-utils/${NFS_TAR}
     wget ${NFS_URL}
     cd $ROOTDIR
     bosh add blob $ROOTDIR/.downloads/${NFS_TAR} debian_nfs_server
