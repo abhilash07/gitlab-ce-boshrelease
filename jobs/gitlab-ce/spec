@@ -91,6 +91,30 @@ properties:
     default: postgresql 
     description: The rails adapter to use when connecting e.g mysql2 / postgresql.
 
+  ldap.enable:
+    default: false
+    description: Enable ldap auto mode.
+  ldap.host:
+    description: Ldap server host.
+  ldap.port:
+    description: Ldap server port.
+  ldap.uid:
+    default: sAMAccountName
+    description: Ldap uid, active director is sAMAccountName.
+  ldap.bind_dn:
+    description: Ldap bind dn, active director is your email.
+  ldap.password:
+    description: Ldap user password.
+  ldap.active_directory:
+    default: false
+    description: Ldap Enable Active Director.
+  ldap.base:
+    default: DC=hello,DC=com
+    description: Ldap base.
+  ldap.group_base:
+    default: OU=xxxx,DC=hello,DC=com
+    description: Ldap group base.
+
   cf.apps_domain:
     description: Domain shared by the UAA and CF API eg '10.244.0.34.xip.io'
   cf.nats.host:
